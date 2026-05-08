@@ -14,6 +14,7 @@ import Orders from './pages/admin/Orders';
 import OrderDetail from './pages/admin/OrderDetail';
 import Products from './pages/admin/Products';
 import SettingsPage from './pages/admin/SettingsPage';
+import Kitchen from './pages/admin/Kitchen';
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
       <Route path="/admin" element={<Dashboard />} />
       <Route path="/admin/commandes" element={<Orders />} />
       <Route path="/admin/commandes/:id" element={<OrderDetail />} />
+      <Route path="/admin/cuisine" element={<Kitchen />} />
       <Route path="/admin/produits" element={<Products />} />
       <Route path="/admin/parametres" element={<SettingsPage />} />
 

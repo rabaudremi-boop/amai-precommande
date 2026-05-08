@@ -1,7 +1,21 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 import type { Order, OrderStatus, Product } from '../types';
 import { MOCK_ORDERS } from '../data/orders';
 import { PRODUCTS } from '../data/products';
+import { useOrderEvents } from '../utils/orderBroadcast';
+import {
+  playDing,
+  sendNotification,
+  vibrate,
+} from '../utils/notifications';
 
 interface RestaurantSettings {
   openingHours: string;
@@ -21,6 +35,8 @@ interface AdminContextValue {
   orders: Order[];
   updateOrderStatus: (id: string, status: OrderStatus) => void;
   addOrder: (order: Order) => void;
+  /** Most-recent live order received via broadcast — for animations. */
+  lastLiveOrderId: string | null;
 
   products: Product[];
   toggleAvailability: (id: string) => void;
@@ -37,6 +53,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [ordersOpen, setOrdersOpen] = useState(true);
   const [orders, setOrders] = useState<Order[]>(MOCK_ORDERS);
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [lastLiveOrderId, setLastLiveOrderId] = useState<string | null>(null);
   const [settings, setSettings] = useState<RestaurantSettings>({
     openingHours: '11h30 – 14h30 · Lundi au vendredi',
     minPrepTime: 20,
@@ -45,8 +62,51 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       'Les commandes sont temporairement en pause. Revenez d’ici quelques minutes.',
   });
 
+  // We need ref-style access to isLoggedIn inside the broadcast handler so the
+  // listener callback (memoized once) reads the latest value.
+  const loggedInRef = useRef(isLoggedIn);
+  useEffect(() => {
+    loggedInRef.current = isLoggedIn;
+  }, [isLoggedIn]);
+
+  const handleEvent = useCallback(
+    (ev: ReturnType<typeof Object> | unknown) => {
+      // Type narrowed by useOrderEvents
+      const e = ev as
+        | { type: 'new-order'; order: Order }
+        | { type: 'status-change'; orderId: string; status: OrderStatus };
+      if (e.type === 'new-order') {
+        setOrders((prev) => {
+          if (prev.some((o) => o.id === e.order.id)) return prev;
+          return [e.order, ...prev];
+        });
+        // Side effects only when an admin is "logged in" on this tab
+        if (loggedInRef.current) {
+          setLastLiveOrderId(e.order.id);
+          playDing();
+          vibrate();
+          sendNotification(
+            `Nouvelle commande ${e.order.number}`,
+            `${e.order.customerName} · Retrait à ${e.order.slot} · ${e.order.total.toFixed(2)} €`,
+            e.order.id
+          );
+          // Auto-clear highlight after 6s
+          setTimeout(() => {
+            setLastLiveOrderId((cur) => (cur === e.order.id ? null : cur));
+          }, 6000);
+        }
+      } else if (e.type === 'status-change') {
+        setOrders((prev) =>
+          prev.map((o) => (o.id === e.orderId ? { ...o, status: e.status } : o))
+        );
+      }
+    },
+    []
+  );
+
+  useOrderEvents(handleEvent);
+
   const login = (_email: string, _pwd: string) => {
-    // Pas de vraie auth — toute combinaison non vide passe.
     setIsLoggedIn(true);
     return true;
   };
@@ -83,6 +143,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         orders,
         updateOrderStatus,
         addOrder,
+        lastLiveOrderId,
         products,
         toggleAvailability,
         updateProduct,

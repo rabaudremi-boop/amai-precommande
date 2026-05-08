@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useAdmin } from '../context/AdminContext';
 import { euro, uid } from '../utils/format';
 import type { Order } from '../types';
+import { broadcastNewOrder } from '../utils/orderBroadcast';
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -43,6 +44,8 @@ export default function Payment() {
         createdAt: new Date().toISOString(),
       };
       addOrder(order);
+      // Notify other tabs (admin / kitchen) — they will ding + show toast.
+      broadcastNewOrder(order);
       // We need to navigate before clearing cart so confirmation can read the order
       navigate('/confirmation', { state: { order }, replace: true });
       // Defer clear so React Router has finished navigating

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Clock, MapPin, ShieldCheck, Sparkles } from 'lucide-react';
 import Logo from '../components/Logo';
+import InstallButton from '../components/InstallButton';
 import { useAdmin } from '../context/AdminContext';
 import { todayLabel } from '../utils/format';
 
@@ -10,14 +11,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-cream-50">
       <header className="px-4 pt-6">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
           <Logo showTagline />
-          <Link
-            to="/admin/login"
-            className="text-[12px] font-medium text-ink-500 hover:text-sage-600"
-          >
-            Espace pro
-          </Link>
+          <div className="flex items-center gap-3">
+            <InstallButton />
+            <Link
+              to="/admin/login"
+              className="text-[12px] font-medium text-ink-500 hover:text-sage-600"
+            >
+              Espace pro
+            </Link>
+          </div>
         </div>
       </header>
 
