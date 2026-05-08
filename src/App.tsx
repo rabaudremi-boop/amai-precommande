@@ -6,6 +6,7 @@ import Cart from './pages/Cart';
 import TimeSlots from './pages/TimeSlots';
 import Payment from './pages/Payment';
 import Confirmation from './pages/Confirmation';
+import Offer from './pages/Offer';
 
 import AdminLogin from './pages/admin/AdminLogin';
 import Dashboard from './pages/admin/Dashboard';
@@ -24,6 +25,9 @@ export default function App() {
       <Route path="/creneaux" element={<TimeSlots />} />
       <Route path="/paiement" element={<Payment />} />
       <Route path="/confirmation" element={<Confirmation />} />
+
+      {/* Page commerciale (présentation client) */}
+      <Route path="/offre" element={<Offer />} />
 
       {/* Admin */}
       <Route path="/admin/login" element={<AdminLogin />} />
