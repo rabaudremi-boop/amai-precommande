@@ -15,7 +15,7 @@ export default function Catalog() {
   const { itemCount, total } = useCart();
   const [activeCat, setActiveCat] = useState<Category>('salades-signatures');
   const [selected, setSelected] = useState<Product | null>(null);
-  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const grouped = useMemo(() => {
     const map = new Map<Category, Product[]>();
