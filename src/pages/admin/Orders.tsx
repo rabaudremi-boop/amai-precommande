@@ -17,7 +17,7 @@ const STATUS_FILTERS: ('all' | OrderStatus)[] = [
 ];
 
 export default function Orders() {
-  const { orders } = useAdmin();
+  const { orders, lastLiveOrderId } = useAdmin();
   const [filter, setFilter] = useState<'all' | OrderStatus>('all');
 
   const filtered = useMemo(
@@ -76,11 +76,17 @@ export default function Orders() {
               </span>
             </div>
             <div className="mt-3 space-y-2">
-              {list.map((o) => (
+              {list.map((o) => {
+                const isLive = lastLiveOrderId === o.id;
+                return (
                 <Link
                   key={o.id}
                   to={`/admin/commandes/${o.id}`}
-                  className="card flex items-center gap-3 p-4 transition hover:shadow-lift"
+                  className={`card flex items-center gap-3 p-4 transition hover:shadow-lift ${
+                    isLive
+                      ? 'ring-4 ring-amber-300/60 bg-amber-50/60 animate-fade-up'
+                      : ''
+                  }`}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -91,6 +97,9 @@ export default function Orders() {
                       </span>
                       {o.paid && (
                         <span className="chip bg-sage-100 text-sage-700">Payée</span>
+                      )}
+                      {isLive && (
+                        <span className="chip bg-amber-200 text-amber-900">Nouvelle ✨</span>
                       )}
                     </div>
                     <div className="mt-1 line-clamp-1 text-[12px] text-ink-500">
@@ -109,7 +118,8 @@ export default function Orders() {
                     <ChevronRight size={16} className="text-ink-300" />
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           </section>
         ))}

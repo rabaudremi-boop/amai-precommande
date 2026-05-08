@@ -39,6 +39,23 @@ export default function AdminLayout({ children, title, bare = false }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Auto-unlock audio on the first interaction anywhere in admin so the ding
+  // works on the very next broadcast — without forcing a "Activer le son" tap.
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const onFirst = () => {
+      unlockAudio();
+      window.removeEventListener('pointerdown', onFirst);
+      window.removeEventListener('keydown', onFirst);
+    };
+    window.addEventListener('pointerdown', onFirst, { once: false });
+    window.addEventListener('keydown', onFirst, { once: false });
+    return () => {
+      window.removeEventListener('pointerdown', onFirst);
+      window.removeEventListener('keydown', onFirst);
+    };
+  }, [isLoggedIn]);
+
   if (!isLoggedIn) return <Navigate to="/admin/login" replace />;
 
   const handleLogout = () => {

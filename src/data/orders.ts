@@ -1,5 +1,10 @@
 import type { Order } from '../types';
 
+// Build mock timestamps relative to now so the kitchen "il y a X min"
+// stays sensible whenever the demo is opened.
+const minutesAgo = (n: number) =>
+  new Date(Date.now() - n * 60_000).toISOString();
+
 export const MOCK_ORDERS: Order[] = [
   {
     id: 'o1042',
@@ -23,7 +28,7 @@ export const MOCK_ORDERS: Order[] = [
     total: 16.9,
     status: 'nouvelle',
     paid: true,
-    createdAt: '2026-05-08T11:12:00',
+    createdAt: minutesAgo(8),
   },
   {
     id: 'o1043',
@@ -47,7 +52,7 @@ export const MOCK_ORDERS: Order[] = [
     total: 14.9,
     status: 'en-preparation',
     paid: true,
-    createdAt: '2026-05-08T11:18:00',
+    createdAt: minutesAgo(6),
   },
   {
     id: 'o1044',
@@ -71,7 +76,7 @@ export const MOCK_ORDERS: Order[] = [
     total: 14.4,
     status: 'prete',
     paid: true,
-    createdAt: '2026-05-08T11:22:00',
+    createdAt: minutesAgo(4),
   },
   {
     id: 'o1045',
@@ -95,7 +100,7 @@ export const MOCK_ORDERS: Order[] = [
     total: 29.4,
     status: 'nouvelle',
     paid: true,
-    createdAt: '2026-05-08T11:30:00',
+    createdAt: minutesAgo(2),
   },
   {
     id: 'o1046',
@@ -129,6 +134,6 @@ export const MOCK_ORDERS: Order[] = [
     total: 14.9,
     status: 'recuperee',
     paid: true,
-    createdAt: '2026-05-08T11:05:00',
+    createdAt: minutesAgo(15),
   },
 ];
