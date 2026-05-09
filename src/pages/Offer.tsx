@@ -434,11 +434,11 @@ export default function Offer() {
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <a
-              href="tel:+33000000000"
+              href="tel:+33629914705"
               className="btn-primary"
             >
               <Phone size={16} />
-              On en parle
+              06 29 91 47 05
             </a>
             <Link to="/" className="btn-secondary">
               <ArrowRight size={16} />
