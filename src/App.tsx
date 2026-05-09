@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
+import DemoNav from './components/DemoNav';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import Cart from './pages/Cart';
@@ -17,6 +18,15 @@ import SettingsPage from './pages/admin/SettingsPage';
 import Kitchen from './pages/admin/Kitchen';
 
 export default function App() {
+  return (
+    <>
+      <DemoNav />
+      <RouterRoutes />
+    </>
+  );
+}
+
+function RouterRoutes() {
   return (
     <Routes>
       {/* Parcours client */}
@@ -43,3 +53,4 @@ export default function App() {
     </Routes>
   );
 }
+
