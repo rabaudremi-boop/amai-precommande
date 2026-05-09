@@ -190,10 +190,12 @@ export default function Kitchen() {
           </div>
         </header>
 
-        {/* Body — split layout: preparing (left) + ready for pickup (right) */}
-        <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-6 lg:flex-row lg:gap-8">
+        {/* Body — split layout: preparing (left) + ready for pickup (right).
+             On mobile, single vertical scroll on the parent.
+             On desktop (lg+), each column scrolls independently. */}
+        <div className="flex flex-1 min-h-0 flex-col gap-6 overflow-y-auto p-6 lg:flex-row lg:gap-0 lg:overflow-hidden lg:p-0">
           {/* LEFT — En cours */}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 lg:flex-1 lg:overflow-y-auto lg:p-6">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-300">
                 <ChefHat size={16} />
@@ -244,7 +246,7 @@ export default function Kitchen() {
           <div className="hidden w-px shrink-0 self-stretch bg-white/10 lg:block" />
 
           {/* RIGHT — Prêtes à récupérer */}
-          <aside className="lg:w-[290px] lg:shrink-0 xl:w-[320px]">
+          <aside className="lg:w-[290px] lg:shrink-0 lg:overflow-y-auto lg:p-6 xl:w-[320px]">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sage-500/25 text-sage-200">
                 <PackageCheck size={16} />
