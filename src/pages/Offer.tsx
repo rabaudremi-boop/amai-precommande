@@ -247,6 +247,7 @@ export default function Offer() {
                 'Application mobile native (App Store / Play Store)',
                 'Création site internet vitrine + référencement SEO Google',
                 'Nom de domaine personnalisé (.fr / .com)',
+                'Bornes de commande sur place (kiosques tactiles)',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
