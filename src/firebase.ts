@@ -1,21 +1,19 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 
-// Firebase web config is *public* — it's a client-side identifier, not a secret.
-// Safe to commit. Security comes from Firestore security rules, not API key obscurity.
-//
-// To wire your project: replace the values below with the firebaseConfig object
-// from console.firebase.google.com → Project settings → Your apps → SDK setup.
+// Firebase web config is *public* by design — apiKey is a client identifier,
+// not a secret. Security comes from Firestore rules, not API key obscurity.
+// Project: amai-precommande (https://console.firebase.google.com/project/amai-precommande)
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FB_API_KEY ?? '',
-  authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN ?? '',
-  projectId: import.meta.env.VITE_FB_PROJECT_ID ?? '',
-  storageBucket: import.meta.env.VITE_FB_STORAGE_BUCKET ?? '',
-  messagingSenderId: import.meta.env.VITE_FB_MESSAGING_SENDER_ID ?? '',
-  appId: import.meta.env.VITE_FB_APP_ID ?? '',
+  apiKey: 'AIzaSyBxu_z6S5NnaHZy1iJR5F1VO2Un9R3ka0A',
+  authDomain: 'amai-precommande.firebaseapp.com',
+  projectId: 'amai-precommande',
+  storageBucket: 'amai-precommande.firebasestorage.app',
+  messagingSenderId: '718373446086',
+  appId: '1:718373446086:web:2cdc9fdadc19a3aab752c7',
 };
 
-/** True when at least the projectId is set — i.e. real backend mode. */
+/** True when projectId is set — i.e. real backend mode. */
 export const firebaseEnabled = Boolean(firebaseConfig.projectId);
 
 let app: FirebaseApp | null = null;
