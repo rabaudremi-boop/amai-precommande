@@ -45,6 +45,21 @@ export default function Kitchen() {
     return () => clearInterval(t);
   }, []);
 
+  // While on the kitchen page, paint the document edges dark so any iOS
+  // rubber-band bounce stays seamless (no cream "edge" reveal).
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtml = html.style.backgroundColor;
+    const prevBody = body.style.backgroundColor;
+    html.style.backgroundColor = '#1A2120'; // ink-900
+    body.style.backgroundColor = '#1A2120';
+    return () => {
+      html.style.backgroundColor = prevHtml;
+      body.style.backgroundColor = prevBody;
+    };
+  }, []);
+
   useEffect(() => {
     const t = setInterval(() => {
       setAudioOn(isAudioUnlocked());

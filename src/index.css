@@ -5,9 +5,16 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
+    /* Match body bg so iOS rubber-band scroll doesn't reveal "edges". */
+    @apply bg-cream-50;
+    /* Disable elastic over-scroll bounce on the document level. */
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
   }
   body {
     @apply bg-cream-50 text-ink-900 font-sans antialiased;
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
     font-feature-settings: 'ss01', 'cv11';
   }
   h1, h2, h3, h4 {
