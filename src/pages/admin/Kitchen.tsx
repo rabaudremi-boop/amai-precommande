@@ -11,6 +11,8 @@ import {
   Volume2,
   VolumeX,
   BellOff,
+  PackageCheck,
+  Hand,
 } from 'lucide-react';
 import AdminLayout from './AdminLayout';
 import { useAdmin } from '../../context/AdminContext';
@@ -28,6 +30,7 @@ import { firebaseEnabled } from '../../firebase';
 import { pushOrder } from '../../utils/orderSync';
 
 const ACTIVE_STATUSES: OrderStatus[] = ['nouvelle', 'en-preparation', 'prete'];
+const PREPARING_STATUSES: OrderStatus[] = ['nouvelle', 'en-preparation'];
 
 export default function Kitchen() {
   const { orders, updateOrderStatus, lastLiveOrderId, addOrder } = useAdmin();
@@ -55,14 +58,27 @@ export default function Kitchen() {
     [orders]
   );
 
+  const preparingOrders = useMemo(
+    () => activeOrders.filter((o) => PREPARING_STATUSES.includes(o.status)),
+    [activeOrders]
+  );
+
+  const readyOrders = useMemo(
+    () =>
+      activeOrders
+        .filter((o) => o.status === 'prete')
+        .sort((a, b) => a.slot.localeCompare(b.slot)),
+    [activeOrders]
+  );
+
   const grouped = useMemo(() => {
     const map = new Map<string, Order[]>();
-    activeOrders.forEach((o) => {
+    preparingOrders.forEach((o) => {
       if (!map.has(o.slot)) map.set(o.slot, []);
       map.get(o.slot)!.push(o);
     });
     return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
-  }, [activeOrders]);
+  }, [preparingOrders]);
 
   const handleAudio = () => {
     unlockAudio();
@@ -174,36 +190,92 @@ export default function Kitchen() {
           </div>
         </header>
 
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {grouped.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <div className="space-y-8">
-              {grouped.map(([slot, list]) => (
-                <section key={slot}>
-                  <div className="mb-3 flex items-baseline justify-between">
-                    <h2 className="font-display text-3xl font-bold text-white">
-                      {slot}
-                    </h2>
-                    <span className="text-[13px] font-semibold uppercase tracking-wider text-white/60">
-                      {list.length} commande{list.length > 1 ? 's' : ''}
-                    </span>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                    {list.map((o) => (
-                      <KitchenCard
-                        key={o.id}
-                        order={o}
-                        live={lastLiveOrderId === o.id}
-                        onStatus={(s) => updateOrderStatus(o.id, s)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))}
+        {/* Body — split layout: preparing (left) + ready for pickup (right) */}
+        <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-6 lg:flex-row lg:gap-8">
+          {/* LEFT — En cours */}
+          <div className="min-w-0 flex-1">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-300">
+                <ChefHat size={16} />
+              </div>
+              <h2 className="font-display text-2xl font-bold text-white">
+                En cours
+              </h2>
+              <span className="text-[12px] font-semibold uppercase tracking-wider text-white/50">
+                {preparingOrders.length} à préparer
+              </span>
             </div>
-          )}
+
+            {grouped.length === 0 ? (
+              <EmptyState
+                icon={<ChefHat size={32} />}
+                title="Pas de commande en cours"
+                text="Les nouvelles commandes apparaîtront ici."
+              />
+            ) : (
+              <div className="space-y-7">
+                {grouped.map(([slot, list]) => (
+                  <section key={slot}>
+                    <div className="mb-3 flex items-baseline justify-between">
+                      <h3 className="font-display text-2xl font-bold text-white">
+                        {slot}
+                      </h3>
+                      <span className="text-[12px] font-semibold uppercase tracking-wider text-white/60">
+                        {list.length} commande{list.length > 1 ? 's' : ''}
+                      </span>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+                      {list.map((o) => (
+                        <KitchenCard
+                          key={o.id}
+                          order={o}
+                          live={lastLiveOrderId === o.id}
+                          onStatus={(s) => updateOrderStatus(o.id, s)}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Vertical separator on desktop */}
+          <div className="hidden w-px shrink-0 self-stretch bg-white/10 lg:block" />
+
+          {/* RIGHT — Prêtes à récupérer */}
+          <aside className="lg:w-[290px] lg:shrink-0 xl:w-[320px]">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sage-500/25 text-sage-200">
+                <PackageCheck size={16} />
+              </div>
+              <h2 className="font-display text-2xl font-bold text-white">
+                Prêtes
+              </h2>
+              <span className="text-[12px] font-semibold uppercase tracking-wider text-white/50">
+                {readyOrders.length} à retirer
+              </span>
+            </div>
+
+            {readyOrders.length === 0 ? (
+              <EmptyState
+                icon={<PackageCheck size={32} />}
+                title="Aucune commande prête"
+                text="Les commandes prêtes apparaîtront ici, en attente du client."
+                small
+              />
+            ) : (
+              <div className="space-y-2.5">
+                {readyOrders.map((o) => (
+                  <ReadyCard
+                    key={o.id}
+                    order={o}
+                    onPickup={() => updateOrderStatus(o.id, 'recuperee')}
+                  />
+                ))}
+              </div>
+            )}
+          </aside>
         </div>
       </div>
     </AdminLayout>
@@ -237,17 +309,43 @@ function KitchenIconButton({
   );
 }
 
-function EmptyState() {
+function EmptyState({
+  icon,
+  title,
+  text,
+  small,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  text: string;
+  small?: boolean;
+}) {
   return (
-    <div className="flex h-full min-h-[60vh] flex-col items-center justify-center text-center">
-      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/5 text-white/40">
-        <ChefHat size={36} />
+    <div
+      className={`flex flex-col items-center justify-center rounded-3xl border border-white/5 bg-white/[0.02] p-8 text-center ${
+        small ? 'min-h-[160px]' : 'min-h-[40vh]'
+      }`}
+    >
+      <div
+        className={`flex items-center justify-center rounded-full bg-white/5 text-white/40 ${
+          small ? 'h-12 w-12' : 'h-16 w-16'
+        }`}
+      >
+        {icon}
       </div>
-      <h2 className="mt-6 font-display text-3xl font-bold">
-        Pas de commande en cours
-      </h2>
-      <p className="mt-2 max-w-sm text-[15px] text-white/60">
-        Toutes les commandes sont récupérées. Le prochain ding signale une nouvelle commande.
+      <h3
+        className={`mt-3 font-display font-bold ${
+          small ? 'text-lg' : 'text-2xl'
+        }`}
+      >
+        {title}
+      </h3>
+      <p
+        className={`mt-1.5 max-w-sm text-white/60 ${
+          small ? 'text-[12px]' : 'text-[14px]'
+        }`}
+      >
+        {text}
       </p>
     </div>
   );
@@ -359,6 +457,47 @@ function KitchenCard({
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Compact card for the right-hand "Prêtes" column. Shows the customer name
+ * prominently (so it's easy to find the right order when the client arrives)
+ * + a big "Récupérée" button.
+ */
+function ReadyCard({
+  order,
+  onPickup,
+}: {
+  order: Order;
+  onPickup: () => void;
+}) {
+  const totalItems = order.items.reduce((s, i) => s + i.quantity, 0);
+  return (
+    <div className="rounded-2xl border border-sage-400/30 bg-sage-500/10 p-4 transition hover:bg-sage-500/15">
+      {/* Customer name is the primary visual — that's what staff scan for. */}
+      <div className="truncate font-display text-2xl font-bold leading-tight text-white">
+        {order.customerName}
+      </div>
+      <div className="mt-1 flex items-center gap-2 text-[12px] text-white/60">
+        <span className="font-semibold tabular-nums">{order.number}</span>
+        <span className="text-white/30">·</span>
+        <span className="rounded-full bg-sage-500/30 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sage-100">
+          {order.slot}
+        </span>
+      </div>
+      <div className="mt-1.5 text-[12px] text-white/55">
+        {totalItems} article{totalItems > 1 ? 's' : ''} ·{' '}
+        <span className="font-semibold text-white/80">{euro(order.total)}</span>
+      </div>
+      <button
+        onClick={onPickup}
+        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sage-500 px-3 py-2.5 text-[13px] font-bold text-white transition hover:bg-sage-400"
+      >
+        <Hand size={14} />
+        Récupérée
+      </button>
     </div>
   );
 }
