@@ -246,9 +246,7 @@ export default function Offer() {
                 'Intégration caisse physique (Tiller, Lightspeed, etc.)',
                 'Module de fidélité / système de points',
                 'Application mobile native (App Store / Play Store)',
-                'Multi-restaurants / gestion de chaîne',
-                'Système de réservation de table',
-                'Livraison à domicile / interface coursiers',
+                'Création site internet vitrine + référencement SEO Google',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
