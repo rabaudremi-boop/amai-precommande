@@ -208,12 +208,11 @@ export default function Offer() {
               ]}
             />
             <SpecBlock
-              title="6. Domaine & hébergement"
+              title="6. Hébergement & sécurité"
               points={[
-                'Nom de domaine .fr ou .com inclus la 1ʳᵉ année (ex. amai-sete.fr)',
-                'Renouvellement domaine ~12 €/an à partir de la 2ᵉ année',
                 'Hébergement Firebase (Google Cloud), serveurs en Europe',
                 'Base de données Firestore en europe-west',
+                'Lien dédié à votre restaurant (sur notre infrastructure)',
                 'HTTPS de bout en bout (certificat SSL auto-renouvelé)',
                 'Sauvegardes automatiques quotidiennes',
                 'Disponibilité visée 99,9% (SLA Google Cloud)',
@@ -247,6 +246,7 @@ export default function Offer() {
                 'Module de fidélité / système de points',
                 'Application mobile native (App Store / Play Store)',
                 'Création site internet vitrine + référencement SEO Google',
+                'Nom de domaine personnalisé (.fr / .com)',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
@@ -287,8 +287,8 @@ export default function Offer() {
                   details={[
                     'Conception & design adaptés à votre marque',
                     'Configuration du catalogue (vos salades)',
-                    'Nom de domaine .fr ou .com inclus 1ʳᵉ année',
-                    'Mise en ligne + certificat SSL',
+                    'Hébergement sécurisé HTTPS inclus',
+                    'Mise en ligne sur lien dédié à votre restaurant',
                     'Formation 1h sur Zoom ou en présentiel',
                   ]}
                 />
@@ -392,7 +392,7 @@ export default function Offer() {
         {/* Timeline */}
         <section className="mt-10">
           <h2 className="font-display text-3xl font-bold text-ink-900">
-            Mise en route en 7 jours
+            Mise en route en 15 jours
           </h2>
           <ol className="mt-5 space-y-3">
             <Step
@@ -403,21 +403,21 @@ export default function Offer() {
             />
             <Step
               n="2"
-              title="Configuration"
-              text="Vous m'envoyez votre menu, vos photos, votre logo. Je personnalise l'app."
-              when="J+1 à J+4"
+              title="Configuration & design"
+              text="Vous m'envoyez votre menu, vos photos, votre identité. Je personnalise l'app à votre marque."
+              when="J+1 à J+7"
             />
             <Step
               n="3"
-              title="Mise en ligne"
-              text="L'app est accessible depuis votre nom de domaine. Tests sur vos vrais appareils."
-              when="J+5"
+              title="Mise en ligne & tests"
+              text="L'app est mise en ligne sur votre lien dédié. Tests sur vos vrais appareils, ajustements en boucle."
+              when="J+8 à J+12"
             />
             <Step
               n="4"
               title="Formation & lancement"
               text="1h ensemble : utilisation, écran cuisine, gestion produits. Premier service avec l'app."
-              when="J+6 à J+7"
+              when="J+13 à J+15"
             />
           </ol>
         </section>
