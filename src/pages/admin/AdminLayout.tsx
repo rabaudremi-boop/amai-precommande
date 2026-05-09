@@ -26,6 +26,8 @@ import {
 import { broadcastNewOrder } from '../../utils/orderBroadcast';
 import { uid } from '../../utils/format';
 import { MOCK_ORDERS } from '../../data/orders';
+import { firebaseEnabled } from '../../firebase';
+import { pushOrder } from '../../utils/orderSync';
 
 interface Props {
   children: ReactNode;
@@ -143,6 +145,7 @@ export default function AdminLayout({ children, title, bare = false }: Props) {
 }
 
 function DemoControls() {
+  const { addOrder } = useAdmin();
   const [audioOn, setAudioOn] = useState(isAudioUnlocked());
   const [notifPerm, setNotifPerm] = useState<NotificationPermission | 'unsupported'>(
     notificationStatus()
@@ -167,7 +170,6 @@ function DemoControls() {
   };
 
   const simulate = () => {
-    // Pick a random mock-style order and broadcast it under a fresh id
     const sample = MOCK_ORDERS[Math.floor(Math.random() * MOCK_ORDERS.length)];
     const slots = ['12h00', '12h15', '12h30', '12h45', '13h00'];
     const names = [
@@ -186,7 +188,14 @@ function DemoControls() {
       status: 'nouvelle' as const,
       createdAt: new Date().toISOString(),
     };
-    broadcastNewOrder(order);
+    if (firebaseEnabled) {
+      // Cross-device: push to Firestore — every admin tab gets it via snapshot
+      pushOrder(order).catch(() => {});
+    } else {
+      // Local fallback: add here + broadcast to other same-device tabs
+      addOrder(order);
+      broadcastNewOrder(order);
+    }
   };
 
   return (

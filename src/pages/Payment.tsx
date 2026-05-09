@@ -7,6 +7,8 @@ import { useAdmin } from '../context/AdminContext';
 import { euro, uid } from '../utils/format';
 import type { Order } from '../types';
 import { broadcastNewOrder } from '../utils/orderBroadcast';
+import { firebaseEnabled } from '../firebase';
+import { pushOrder } from '../utils/orderSync';
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -24,33 +26,45 @@ export default function Payment() {
     checkout.customerPhone.trim() &&
     checkout.customerEmail.trim();
 
-  const handlePay = () => {
+  const handlePay = async () => {
     if (!canPay) return;
     setProcessing(true);
 
-    setTimeout(() => {
-      const orderNumber = `#${1100 + Math.floor(Math.random() * 800)}`;
-      const order: Order = {
-        id: uid(),
-        number: orderNumber,
-        customerName: checkout.customerName,
-        customerPhone: checkout.customerPhone,
-        customerEmail: checkout.customerEmail,
-        slot: selectedSlot ?? '',
-        items,
-        total,
-        status: 'nouvelle',
-        paid: true,
-        createdAt: new Date().toISOString(),
-      };
+    // Simulated payment latency before "processing" succeeds
+    await new Promise((r) => setTimeout(r, 1100));
+
+    const orderNumber = `#${1100 + Math.floor(Math.random() * 800)}`;
+    const order: Order = {
+      id: uid(),
+      number: orderNumber,
+      customerName: checkout.customerName,
+      customerPhone: checkout.customerPhone,
+      customerEmail: checkout.customerEmail,
+      slot: selectedSlot ?? '',
+      items,
+      total,
+      status: 'nouvelle',
+      paid: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Cross-device sync via Firestore (when wired). Wait for the write so the
+    // admin tab on another device sees the order before we move on.
+    if (firebaseEnabled) {
+      try {
+        await pushOrder(order);
+      } catch {
+        // If Firestore fails, we still fall back to local + broadcast.
+      }
+    } else {
+      // Local-only mode: keep the order in this tab's admin context too.
       addOrder(order);
-      // Notify other tabs (admin / kitchen) — they will ding + show toast.
-      broadcastNewOrder(order);
-      // We need to navigate before clearing cart so confirmation can read the order
-      navigate('/confirmation', { state: { order }, replace: true });
-      // Defer clear so React Router has finished navigating
-      setTimeout(() => clear(), 50);
-    }, 1100);
+    }
+    // Same-device cross-tab redundancy
+    broadcastNewOrder(order);
+
+    navigate('/confirmation', { state: { order }, replace: true });
+    setTimeout(() => clear(), 50);
   };
 
   return (

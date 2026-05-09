@@ -24,11 +24,13 @@ import {
 } from '../../utils/notifications';
 import { broadcastNewOrder } from '../../utils/orderBroadcast';
 import { MOCK_ORDERS } from '../../data/orders';
+import { firebaseEnabled } from '../../firebase';
+import { pushOrder } from '../../utils/orderSync';
 
 const ACTIVE_STATUSES: OrderStatus[] = ['nouvelle', 'en-preparation', 'prete'];
 
 export default function Kitchen() {
-  const { orders, updateOrderStatus, lastLiveOrderId } = useAdmin();
+  const { orders, updateOrderStatus, lastLiveOrderId, addOrder } = useAdmin();
   const [now, setNow] = useState(new Date());
   const [audioOn, setAudioOn] = useState(isAudioUnlocked());
   const [notifPerm, setNotifPerm] = useState<NotificationPermission | 'unsupported'>(
@@ -81,7 +83,7 @@ export default function Kitchen() {
       'Hugo Lambert',
       'Élise Morin',
     ];
-    broadcastNewOrder({
+    const order: Order = {
       ...sample,
       id: uid(),
       number: `#${1100 + Math.floor(Math.random() * 800)}`,
@@ -89,7 +91,13 @@ export default function Kitchen() {
       slot: slots[Math.floor(Math.random() * slots.length)],
       status: 'nouvelle',
       createdAt: new Date().toISOString(),
-    });
+    };
+    if (firebaseEnabled) {
+      pushOrder(order).catch(() => {});
+    } else {
+      addOrder(order);
+      broadcastNewOrder(order);
+    }
   };
 
   const goFullscreen = () => {
