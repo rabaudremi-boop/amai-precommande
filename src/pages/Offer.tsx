@@ -336,14 +336,16 @@ export default function Offer() {
             </div>
             <div>
               <h3 className="font-display text-2xl font-bold leading-tight">
-                1,30 € par jour. Une salade en plus par jour, et c'est
-                largement remboursé.
+                3 salades de plus dans le mois. Et l'abonnement est
+                remboursé.
               </h3>
               <p className="mt-2 text-[15px] text-white/90">
-                39 € / 30 jours = 1,30 €. Si l'app vous fait vendre ne
-                serait-ce qu'<strong>une seule salade supplémentaire</strong> dans
-                la journée, vous êtes déjà rentable. La plupart des restos
-                équipés voient leur volume midi grimper de 15 à 25%.
+                39 € ≈ le prix de <strong>3 salades</strong>. Que ce soit
+                parce que vos clients évitent la queue au comptoir, ou parce
+                que commander en 2 taps est plus simple que d'appeler — il
+                suffit de <strong>3 ventes supplémentaires sur tout un mois</strong>{' '}
+                pour amortir l'app. La plupart des restos équipés voient leur
+                volume midi grimper de 15 à 25%.
               </p>
             </div>
           </div>
