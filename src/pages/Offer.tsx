@@ -208,14 +208,25 @@ export default function Offer() {
               ]}
             />
             <SpecBlock
-              title="6. Stack technique & sécurité"
+              title="6. Domaine & hébergement"
+              points={[
+                'Nom de domaine .fr ou .com inclus la 1ʳᵉ année (ex. amai-sete.fr)',
+                'Renouvellement domaine ~12 €/an à partir de la 2ᵉ année',
+                'Hébergement Firebase (Google Cloud), serveurs en Europe',
+                'Base de données Firestore en europe-west',
+                'HTTPS de bout en bout (certificat SSL auto-renouvelé)',
+                'Sauvegardes automatiques quotidiennes',
+                'Disponibilité visée 99,9% (SLA Google Cloud)',
+              ]}
+            />
+            <SpecBlock
+              title="7. Stack technique & conformité"
               points={[
                 'Application web installable (PWA) iOS + Android',
-                'Hébergement Firebase, base Firestore en Europe',
-                'HTTPS de bout en bout, sauvegardes automatiques quotidiennes',
-                'Disponibilité visée 99,9% (infrastructure Google Cloud)',
                 'Compatible iPhone 8+, Android 8+, navigateurs modernes',
                 'Conformité RGPD : mentions légales, consentement cookies',
+                'Données clients hébergées en Union Européenne',
+                'Code source remis sur demande à la fin du contrat',
               ]}
             />
           </div>
@@ -278,7 +289,8 @@ export default function Offer() {
                   details={[
                     'Conception & design adaptés à votre marque',
                     'Configuration du catalogue (vos salades)',
-                    'Mise en ligne sous votre nom de domaine',
+                    'Nom de domaine .fr ou .com inclus 1ʳᵉ année',
+                    'Mise en ligne + certificat SSL',
                     'Formation 1h sur Zoom ou en présentiel',
                   ]}
                 />
