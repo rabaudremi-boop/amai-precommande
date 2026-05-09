@@ -13,6 +13,8 @@ import {
   ArrowRight,
   Zap,
   TrendingUp,
+  FileText,
+  AlertTriangle,
 } from 'lucide-react';
 import Logo from '../components/Logo';
 
@@ -132,6 +134,125 @@ export default function Offer() {
                 'Pas de TPE physique nécessaire',
               ]}
             />
+          </div>
+        </section>
+
+        {/* Cahier des charges */}
+        <section className="mt-10 overflow-hidden rounded-card bg-white shadow-soft">
+          <div className="border-l-4 border-sage-500 bg-cream-50 px-6 py-5 sm:px-8">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-sage-700">
+              <FileText size={14} />
+              Cahier des charges détaillé
+            </div>
+            <h2 className="mt-2 font-display text-3xl font-bold text-ink-900">
+              Périmètre fonctionnel & technique
+            </h2>
+            <p className="mt-1 max-w-2xl text-[14px] text-ink-700">
+              Ce que je m'engage à livrer, dans les moindres détails. Ce
+              document fait partie intégrante du devis et du contrat.
+            </p>
+          </div>
+
+          <div className="grid gap-x-8 gap-y-7 p-6 sm:p-8 md:grid-cols-2">
+            <SpecBlock
+              title="1. Parcours client (mobile-first)"
+              points={[
+                'Page d’accueil avec accroche, horaires du jour et délai mini',
+                'Catalogue par catégories : Signatures, À composer, Menus, Boissons, Desserts',
+                'Fiche produit personnalisable (sauce, retrait d’ingrédients, suppléments)',
+                'Panier modifiable avec quantités et options visibles',
+                'Sélection de créneau (disponible / presque complet / complet)',
+                'Paiement carte sécurisé + récapitulatif',
+                'Confirmation avec numéro de commande et instructions de retrait',
+              ]}
+            />
+            <SpecBlock
+              title="2. Tableau de bord restaurateur"
+              points={[
+                'Connexion sécurisée par identifiant',
+                'Vue jour : commandes, CA, panier moyen, prochain créneau',
+                'Bouton « mettre en pause les commandes » en 1 clic',
+                'Liste filtrable par statut, regroupée par créneau',
+                'Fiche détail : client, produits, options, transitions de statut',
+                'Gestion des produits (disponibilité, prix, rupture)',
+                'Paramètres généraux du restaurant',
+              ]}
+            />
+            <SpecBlock
+              title="3. Écran cuisine"
+              points={[
+                'Vue plein écran adaptée écrans comptoir / tablettes',
+                'Cartes XL par créneau, codage couleur des statuts',
+                'Sonnerie audible à chaque nouvelle commande',
+                'Boutons gros doigts pour faire avancer les statuts',
+                'Horloge live et temps écoulé par commande',
+              ]}
+            />
+            <SpecBlock
+              title="4. Notifications temps réel"
+              points={[
+                'Notification push iOS / Android sur votre téléphone (PWA installée)',
+                'Vibration haptique',
+                'Synchronisation temps réel sans rafraîchissement manuel',
+                'Email de confirmation client à chaque commande payée',
+              ]}
+            />
+            <SpecBlock
+              title="5. Paiement"
+              points={[
+                'Intégration Stripe ou SumUp (au choix selon vos préférences)',
+                'Apple Pay, Google Pay, carte bancaire',
+                '3D Secure inclus',
+                'Reversement automatique sur votre compte bancaire (J+2 en moyenne)',
+                'Gestion des remboursements depuis l’admin',
+              ]}
+            />
+            <SpecBlock
+              title="6. Stack technique & sécurité"
+              points={[
+                'Application web installable (PWA) iOS + Android',
+                'Hébergement Firebase, base Firestore en Europe',
+                'HTTPS de bout en bout, sauvegardes automatiques quotidiennes',
+                'Disponibilité visée 99,9% (infrastructure Google Cloud)',
+                'Compatible iPhone 8+, Android 8+, navigateurs modernes',
+                'Conformité RGPD : mentions légales, consentement cookies',
+              ]}
+            />
+          </div>
+
+          <div className="border-t border-cream-200 bg-rose-50/40 px-6 py-5 sm:px-8">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-rose-700">
+              <AlertTriangle size={14} />
+              Hors périmètre
+            </div>
+            <p className="mt-2 max-w-2xl text-[13px] text-ink-700">
+              Les éléments suivants ne sont pas inclus dans cette offre. Ils
+              peuvent faire l’objet d’un avenant tarifé séparément si
+              vous le souhaitez par la suite :
+            </p>
+            <ul className="mt-3 grid gap-1.5 text-[13px] text-ink-700 sm:grid-cols-2">
+              {[
+                'Intégration caisse physique (Tiller, Lightspeed, etc.)',
+                'Module de fidélité / système de points',
+                'Application mobile native (App Store / Play Store)',
+                'Multi-restaurants / gestion de chaîne',
+                'Système de réservation de table',
+                'Livraison à domicile / interface coursiers',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-cream-200 px-6 py-4 text-[12px] text-ink-500 sm:px-8">
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck size={13} className="text-sage-600" />
+              Document contractuel · annexé au devis
+            </span>
+            <span>Version 1.0 · Mai 2026</span>
           </div>
         </section>
 
@@ -479,6 +600,31 @@ function ComparisonCard({
       </div>
       <div className="mt-2 font-display text-3xl font-bold">{fee}</div>
       <div className="mt-1 text-[12px] text-ink-500">{extra}</div>
+    </div>
+  );
+}
+
+function SpecBlock({
+  title,
+  points,
+}: {
+  title: string;
+  points: string[];
+}) {
+  return (
+    <div>
+      <h3 className="font-display text-lg font-bold text-ink-900">{title}</h3>
+      <ul className="mt-2.5 space-y-1.5">
+        {points.map((p) => (
+          <li
+            key={p}
+            className="flex items-start gap-2 text-[13px] leading-relaxed text-ink-700"
+          >
+            <Check size={14} className="mt-0.5 shrink-0 text-sage-600" />
+            <span>{p}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
