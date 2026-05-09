@@ -336,13 +336,8 @@ export default function Offer() {
             </div>
             <div>
               <h3 className="font-display text-2xl font-bold leading-tight">
-                1,30 € par jour. Une salade en plus par jour, et c'est
-                largement remboursé.
+                3 salades en plus dans le mois et c'est remboursé.
               </h3>
-              <p className="mt-2 font-display text-xl font-semibold text-white/95">
-                Ou autrement dit : <strong>3 salades en plus dans le mois</strong>{' '}
-                et c'est remboursé.
-              </p>
               <p className="mt-3 text-[15px] text-white/90">
                 Que ce soit parce que vos clients évitent la queue au
                 comptoir, ou parce que commander en 2 taps est plus simple que
